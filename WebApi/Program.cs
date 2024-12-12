@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using WebApi.Repositories;
+
 namespace WebApi
 {
     public class Program
@@ -9,10 +12,14 @@ namespace WebApi
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<RepositoryContext>(options => 
+                options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection"))); 
 
             var app = builder.Build();
 
@@ -26,7 +33,6 @@ namespace WebApi
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
