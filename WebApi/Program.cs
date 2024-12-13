@@ -1,6 +1,17 @@
+using WebApi.Extensions;
 
-using Microsoft.EntityFrameworkCore;
-using WebApi.Repositories;
+/* 
+<summary>
+    AddAplicationPart: Reflection alýyor parametre olarak. Çalýþma zamanýnda 
+    iþlemin çözülebilmesi demektir bu.Controller farklý bir projeye taþýndýðý 
+    için ve bu yapýnýn kullanýlabilmesi için bu fonksiyonun çaðrýlmasý gereklidir.
+    EndPointsApiExplorer bu fonksiyonla beraber bu projedeki controllerlarý keþfedebilecek.
+    AddNewtonsoftJson: Bu fonksiyon Patch iþleminin yapýlabilmesi için gerekli 2 kütüphaneden biri.
+    Diðer indirilen kütüphane (JsonPatch) controllerlarýn olduðu Presentation katmanýna taþýndý. Çünkü
+    Patch iþlemi controllerda tanýmlanmakta ve JsonPatchDocument sýnýfý bu actionun gerçekleþtirildiði
+    fonksiyonda kullanýlmaktadýr.
+</summary>
+*/
 
 namespace WebApi
 {
@@ -13,13 +24,15 @@ namespace WebApi
             // Add services to the container.
 
             builder.Services.AddControllers()
+                .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly) 
                 .AddNewtonsoftJson();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<RepositoryContext>(options => 
-                options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection"))); 
+            builder.Services.ConfigureSqlContext(builder.Configuration);
+            builder.Services.ConfigureRepositoryManager();
+            builder.Services.ConfigureServiceManager();
 
             var app = builder.Build();
 
