@@ -1,4 +1,5 @@
 using NLog;
+using Services.Contracts;
 using WebApi.Extensions;
 
 /* 
@@ -11,6 +12,11 @@ using WebApi.Extensions;
     Diðer indirilen kütüphane (JsonPatch) controllerlarýn olduðu Presentation katmanýna taþýndý. Çünkü
     Patch iþlemi controllerda tanýmlanmakta ve JsonPatchDocument sýnýfý bu actionun gerçekleþtirildiði
     fonksiyonda kullanýlmaktadýr.
+
+    WebApplication için yazdýðýmýz bir extension methodu kullanmak Services için yazdýklarýmýzdan
+    farklý olacak. Çünkü service ekleme safhasý build edip web applicationu elde etmeden önce gerçekleþiyor.
+    Fakat bizim yazdýðýmýz method servislerden birine ihtiyaç duyuyor. Bunu saðlamak için gerekli ifade yazýldý.
+    (GetRequiredService<>())
 </summary>
 */
 
@@ -41,11 +47,19 @@ namespace WebApi
 
             var app = builder.Build();
 
+            var logger = app.Services.GetRequiredService<ILoggerService>();
+            app.ConfigureExceptionHandler(logger);
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
+
+            if (app.Environment.IsProduction())
+            {
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
