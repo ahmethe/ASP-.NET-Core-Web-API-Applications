@@ -62,6 +62,9 @@ namespace Presentation.Controllers
         {
             try
             {
+                if (book is null)
+                    return BadRequest();
+
                 _manager.BookService.CreateOneBook(book);
 
                 return StatusCode(201, book);

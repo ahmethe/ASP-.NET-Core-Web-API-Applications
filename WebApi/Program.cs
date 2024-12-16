@@ -1,3 +1,4 @@
+using NLog;
 using WebApi.Extensions;
 
 /* 
@@ -21,6 +22,9 @@ namespace WebApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            //NLog konfigürasyonu için konfigürasyon dosyasýnýn yolu veriliyor ve bu klasör adýnýn alýnmasý ve dosya adýnýn alýnýp birleþtirilmesi þeklinde gerçekleþtiriliyor.
+            LogManager.Setup().LoadConfigurationFromFile(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+
             // Add services to the container.
 
             builder.Services.AddControllers()
@@ -33,6 +37,7 @@ namespace WebApi
             builder.Services.ConfigureSqlContext(builder.Configuration);
             builder.Services.ConfigureRepositoryManager();
             builder.Services.ConfigureServiceManager();
+            builder.Services.ConfigureLoggerService();
 
             var app = builder.Build();
 
