@@ -10,10 +10,13 @@ using Services.Contracts;
     Extension method yazarken genişletmek istediğimiz ifadeyi this anahtar sözcüğü ile ilk parametre olarak
     vereceğiz. Daha sonra ihtiyaç duyulan başka parametreler varsa bunlar da eklenecek. Daha sonra eklenmek istenen
     kayıt fonksiyon gövdesine yazılacak. Böylelikle Program.cs içerisindeki konfigürasyonlar daha iyi yönetilebilecek.
+    IoC kaydı yapılırken sınıflardan üretilen nesnelerin yaşam döngüsü için AddTransient, AddScoped, AddSingleton gibi ifadeler
+    kullanılacak.
 
     ConfigureSqlContext: DbContext ifademizin servis kaydı. (IoC)
-    ConfigureRepositoryManager: RepositoryManager ifademizin servis kaydo. (IoC)
-    ConfigureServiceManager: ServiceManager ifademizin servis kaydo. (IoC)
+    ConfigureRepositoryManager: RepositoryManager ifademizin servis kaydı. (IoC)
+    ConfigureServiceManager: ServiceManager ifademizin servis kaydı. (IoC)
+    ConfigureLoggerService: NLog kütüphanesi ile kullandığımız LoggerService ifadesinin servis kaydı. (IoC)
 </summary>
 */
 
@@ -30,5 +33,8 @@ namespace WebApi.Extensions
 
         public static void ConfigureServiceManager(this IServiceCollection services) =>
             services.AddScoped<IServiceManager, ServiceManager>();
+
+        public static void ConfigureLoggerService(this IServiceCollection services) =>
+            services.AddSingleton<ILoggerService, LoggerManager>(); //Bir nevi static bir tanım. Tek bir nesne üretilecek ve tüm kullanıcılar tarafından kullanılacak.
     }
 }
