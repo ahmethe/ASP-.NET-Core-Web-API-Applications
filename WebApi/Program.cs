@@ -17,6 +17,10 @@ using WebApi.Extensions;
     farklý olacak. Çünkü service ekleme safhasý build edip web applicationu elde etmeden önce gerçekleþiyor.
     Fakat bizim yazdýðýmýz method servislerden birine ihtiyaç duyuyor. Bunu saðlamak için gerekli ifade yazýldý.
     (GetRequiredService<>())
+
+    Default olarak API içerik pazarlýðýna kapalýdýr. AddControllers üzerinden bir konfigürasyonla RespectBrowserAcceptHeader
+    özelliði true yapýlýr. Desteklenmeyen çýktýlar için 406 Not Acceptable ile dönüþ yapabilmek için de ReturnHttpNotAcceptable
+    özelliði true yapýlýr. AddXmlDataContractSerializerFormatters ifadesi ile XML çýktý dönülebilir hale gelinecek.
 </summary>
 */
 
@@ -33,9 +37,15 @@ namespace WebApi
 
             // Add services to the container.
 
-            builder.Services.AddControllers()
-                .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly) 
-                .AddNewtonsoftJson();
+            builder.Services.AddControllers(config =>
+            {
+                config.RespectBrowserAcceptHeader = true; 
+                config.ReturnHttpNotAcceptable = true;
+            })
+            .AddCustomCsvFormatter()
+            .AddXmlDataContractSerializerFormatters()
+            .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly) 
+            .AddNewtonsoftJson();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
