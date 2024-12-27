@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using NLog;
 using Services.Contracts;
 using WebApi.Extensions;
@@ -21,6 +22,17 @@ using WebApi.Extensions;
     Default olarak API içerik pazarlýðýna kapalýdýr. AddControllers üzerinden bir konfigürasyonla RespectBrowserAcceptHeader
     özelliði true yapýlýr. Desteklenmeyen çýktýlar için 406 Not Acceptable ile dönüþ yapabilmek için de ReturnHttpNotAcceptable
     özelliði true yapýlýr. AddXmlDataContractSerializerFormatters ifadesi ile XML çýktý dönülebilir hale gelinecek.
+    
+    API için controller yazarken controller yapýmýzý ControllerBase'den kalýtým alarak ve [ApiController] attribute annotationunu
+    yazarak gerçekleþtiririz. Ve bu iki kullaným API'ye birtakým default özellikler kazandýrýr. Bunlar mapleme, binding, validation
+    gibi birtakým default tanýmlardýr. Bunlarý istersek baskýlayarak custom tanýmlamalar yapabiliriz. Biz burada doðrulamaya odaklandýðýmýz
+    için builder.Services üzerinden Configure methodu ile API'ye gelen invalid filterýn 400 bad request dönmesini bastýrmýþ olduk ve kendi kontrolümüz
+    ile invalid durumlarda 422 UnProcessableEntity kodunun dönülebilmesini saðladýk. Validationdaki amaç tanýmladýðýmýz bir dizi kuralýn istemci ile 
+    sunucu arasýndaki veri deðiþtokuþu saðlanýrken dikkate alýnýp alýnmadýðýdýr. Yerleþik olarak bulunan attributeler ile yani data annotationlar ile kurallar
+    tanýmlanacak. IValidationObject interfacesi implemente edilerek custom tanýmlar da yapýlabilir.
+    [ApiController] -> 400, attribute routing, binding, çoklu-parçalý dosya iþleme, problem details
+    ControllerBase -> BadRequest, NotFound, TryValidateModel...
+    Microsoft.AspNetCore.Mvc -> attribute ifadeleri. [Route], [Bind], [HttpGet]...
 </summary>
 */
 
@@ -39,13 +51,18 @@ namespace WebApi
 
             builder.Services.AddControllers(config =>
             {
-                config.RespectBrowserAcceptHeader = true; 
+                config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
             })
             .AddCustomCsvFormatter()
             .AddXmlDataContractSerializerFormatters()
-            .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly) 
+            .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly)
             .AddNewtonsoftJson();
+
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
