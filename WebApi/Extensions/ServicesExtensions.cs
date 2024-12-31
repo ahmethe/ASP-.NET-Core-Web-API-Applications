@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Presentation.ActionFilters;
 using Repositories.Contracts;
 using Repositories.EFCore;
 using Services;
@@ -36,5 +37,11 @@ namespace WebApi.Extensions
 
         public static void ConfigureLoggerService(this IServiceCollection services) =>
             services.AddSingleton<ILoggerService, LoggerManager>(); //Bir nevi static bir tanım. Tek bir nesne üretilecek ve tüm kullanıcılar tarafından kullanılacak.
+    
+        public static void ConfigureActionFilters(this IServiceCollection services)
+        {
+            services.AddScoped<ValidationFilterAttribute>();
+            services.AddSingleton<LogFilterAttribute>();
+        }
     }
 }
