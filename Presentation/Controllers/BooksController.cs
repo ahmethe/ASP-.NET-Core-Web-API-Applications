@@ -1,8 +1,11 @@
 ﻿using Entities.DataTransferObjects;
+using Entities.RequestFeatures;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc; //Bu paketi indirdik çünkü controller yapısını kullanabilmemiz gerekiyor. Controller özelliğini kazandırabilmek için.
 using Presentation.ActionFilters;
 using Services.Contracts;
+using System.Text.Json;
 
 /* 
 <summary>
@@ -20,6 +23,14 @@ using Services.Contracts;
     Controller ve action levelde de yapılabilir. IoC ile doğrudan yapılabilir.
     Bir actionun çalışmasından önce veya çalışmasından sonra action filter çalıştırılabilir.
     Birden fazla action filter kullandığımızda bunların, order ile çağrılma sırasını belirleyebiliriz.
+
+    Paging, API'dan sonuçların kısmi olarak alınmasıdır. RESTful API tasarımı için önemlidir.
+    Bant genişliği bizi kısıtlayan bir durumdur. Bilgisayar bilimlerinde bu tür taleplerin sonsuza gittiği varsayılır.
+    Çok büyük bir veriseti istemciye gönderilemez. Hafıza sorunları ile hem istemci hem sunucu tarafında karşılaşılabilir.
+    Bunun yerine bir sayfalama mekanizması ile bütün veri okunmadan istemciden alınan request parametreleri ile
+    veri sunulabilir. Bu concrete bir query yardımıyla ve bir endpoint tanımı ile gerçekleştirilebilir. Kullanıcıya sayfalandırma
+    mekanizması ile ilgili header kısmında bilgi sunulabilir.
+    Bir kaynakla doğrudan ilgili olmayan ifadeler query string olarak tanımlanabilir.
 </summary>
 */
 
@@ -38,10 +49,16 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBooks()
+        public async Task<IActionResult> GetAllBooks([FromQuery] BookParameters bookParameters)
         {
-            var books = await _manager.BookService.GetAllBooksAsync(false);
-            return Ok(books);
+            var pagedResult = await _manager.
+                BookService.
+                GetAllBooksAsync(bookParameters, false);
+
+            Response.Headers.Append("X-Pagination",
+                JsonSerializer.Serialize(pagedResult.metaData));
+            
+            return Ok(pagedResult.books);
         }
 
         [HttpGet("{id:int}")]

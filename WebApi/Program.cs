@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using Presentation.ActionFilters;
 using Services.Contracts;
 using WebApi.Extensions;
 
@@ -34,6 +33,9 @@ using WebApi.Extensions;
     [ApiController] -> 400, attribute routing, binding, çoklu-parçalý dosya iþleme, problem details
     ControllerBase -> BadRequest, NotFound, TryValidateModel...
     Microsoft.AspNetCore.Mvc -> attribute ifadeleri. [Route], [Bind], [HttpGet]...
+
+    X-Pagination ifademizin clientlar tarafýndan okunup tüketilebilmesi için bir izin tanýmlanmalýdýr. Bu da Cors konfigürasyonuyla mümkündür.
+    CORS: Cross Origin Resource Sharing.
 </summary>
 */
 
@@ -74,6 +76,7 @@ namespace WebApi
             builder.Services.ConfigureLoggerService();
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.ConfigureActionFilters();
+            builder.Services.ConfigureCors();
 
             var app = builder.Build();
 
@@ -93,6 +96,8 @@ namespace WebApi
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
