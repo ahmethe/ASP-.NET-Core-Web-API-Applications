@@ -36,6 +36,10 @@ using System.Text.Json;
     Örneğin bir araç satış sitesinde, ilanları vasıtanın türüne, daha sonra markasına, modeline göre filtreleyebiliriz. Paginge benzer
     şekilde kaynak setinin bir alt kümesine erişiyoruz. Burada MVC patterninin view ifadesi front ende bırakıldığı için elimizde bir ui yok.
     Yine pagingde ifade edildiği gibi doğrudan kaynakla ilgili olmadığı için biz bu filtreleme işlemini query stringler üzerinden yapacağız.
+
+    Searching bir terim ya da anahtar değer yardımıyla uygulama içerisindeki en alakalı sonuçları döndürmek üzere uygulanan bir işlevdir.
+    Tek veya birden fazla kolon üzerinde yapılabilir. Bir veya birden fazla kaynak üzerinde yapılabilir.
+    Bir arama terimi ile endpoint tanımı gerçekleştirilicek. Çeşitli kütüphaneler yardımıyla daha komplex searching yapılabilir.
 </summary>
 */
 
