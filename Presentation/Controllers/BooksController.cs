@@ -31,6 +31,11 @@ using System.Text.Json;
     veri sunulabilir. Bu concrete bir query yardımıyla ve bir endpoint tanımı ile gerçekleştirilebilir. Kullanıcıya sayfalandırma
     mekanizması ile ilgili header kısmında bilgi sunulabilir.
     Bir kaynakla doğrudan ilgili olmayan ifadeler query string olarak tanımlanabilir.
+
+    Filtering, bir takım kriterlere bağlı olarak sonuçların getirilmesini sağlayan bir mekanizmadır.
+    Örneğin bir araç satış sitesinde, ilanları vasıtanın türüne, daha sonra markasına, modeline göre filtreleyebiliriz. Paginge benzer
+    şekilde kaynak setinin bir alt kümesine erişiyoruz. Burada MVC patterninin view ifadesi front ende bırakıldığı için elimizde bir ui yok.
+    Yine pagingde ifade edildiği gibi doğrudan kaynakla ilgili olmadığı için biz bu filtreleme işlemini query stringler üzerinden yapacağız.
 </summary>
 */
 
