@@ -43,6 +43,9 @@ using System.Text.Json;
 
     Sorting, query string parametreleri yardımıyla tercih edilen bir yolla sonuçların sıralanması işlevidir. Sıralama işlemi, sıralanmanın yapılmak istendiği alan
     ve yapılma şekli(ascending or descending) bir query string içerisinde kullanıcın bize ulaşacağı bir endpoint yardımıyla gerçekleştirilecek.
+
+    Data shaping; API tüketicisinin, query string aracılığıyla talep ettiği nesnenin alanlarını seçerek sonuç setini şekillendirmesini sağlar. Her API için olmazsa olmaz
+    değildir. Run time'da çalışacak şekilde kodlama yapıldığı için maliyetli bir işlemdir. Trafik durumu ve bu işlemin maliyetli olması arasında doğru denge kurulmalıdır.
 </summary>
 */
 

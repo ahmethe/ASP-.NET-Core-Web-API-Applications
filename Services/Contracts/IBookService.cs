@@ -1,6 +1,7 @@
 ﻿using Entities.DataTransferObjects;
 using Entities.Models;
 using Entities.RequestFeatures;
+using System.Dynamic;
 
 /*
 <summary>
@@ -18,7 +19,7 @@ namespace Services.Contracts
     public interface IBookService
     {
         //IEnumerable yani foreach ile dolaşılabilir bir ifade.
-        Task<(IEnumerable<BookDto> books, MetaData metaData)> GetAllBooksAsync(BookParameters bookParameters, 
+        Task<(IEnumerable<ExpandoObject> books, MetaData metaData)> GetAllBooksAsync(BookParameters bookParameters, 
             bool trackChanges);
         Task<BookDto> GetOneBookByIdAsync(int id, bool trackChanges);
         Task<BookDto> CreateOneBookAsync(BookDtoForInsertion book);
