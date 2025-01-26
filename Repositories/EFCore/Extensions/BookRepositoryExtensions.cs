@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using System.Linq.Dynamic.Core;
 
 /* 
 <summary>
@@ -11,6 +12,8 @@
     Ayrıca bu 2 özellik için de belirtmek gerekir ki kontrat üzerinde bir değişiklik yapılmadığı için
     diğer katmanlarda ayrıca bir değişiklik yapılmadı. Uygulama detaylarını ilgilendirecek bir değişiklik yapıldı.
     BookParameters ifadesine yeni özellikler tanımlandı. Ve bu özellikler uygulamada kullanıldı.
+    Sort fonksiyonunda oluşturulan genel sorgu oluşturucu fonksiyonun çağrılmasına ek olarak kaynağa has birtakım kontroller yapılıp
+    sorgu işlemi gerçekleştirildi.
 </summary>
 */
 
@@ -36,6 +39,21 @@ namespace Repositories.EFCore.Extensions
                 .Where(b => b.Title
                 .ToLower()
                 .Contains(searchTerm));
+        }
+
+        public static IQueryable<Book> Sort(this IQueryable<Book> books,
+            string orderByQueryString)
+        {
+            if (string.IsNullOrWhiteSpace(orderByQueryString))
+                return books.OrderBy(b => b.Id); //Repositoryde default karşılaştırma id üzerinden ascending tanımlandığı için böyle bir ifade var.
+
+            var orderQuery = OrderQueryBuilder
+                .CreateOrderQuery<Book>(orderByQueryString);
+
+            if (string.IsNullOrWhiteSpace(orderQuery))
+                return books.OrderBy(b => b.Id); // Aynı default davranış burası için de geçerli.
+
+            return books.OrderBy(orderQuery);
         }
     }
 }

@@ -40,6 +40,9 @@ using System.Text.Json;
     Searching bir terim ya da anahtar değer yardımıyla uygulama içerisindeki en alakalı sonuçları döndürmek üzere uygulanan bir işlevdir.
     Tek veya birden fazla kolon üzerinde yapılabilir. Bir veya birden fazla kaynak üzerinde yapılabilir.
     Bir arama terimi ile endpoint tanımı gerçekleştirilicek. Çeşitli kütüphaneler yardımıyla daha komplex searching yapılabilir.
+
+    Sorting, query string parametreleri yardımıyla tercih edilen bir yolla sonuçların sıralanması işlevidir. Sıralama işlemi, sıralanmanın yapılmak istendiği alan
+    ve yapılma şekli(ascending or descending) bir query string içerisinde kullanıcın bize ulaşacağı bir endpoint yardımıyla gerçekleştirilecek.
 </summary>
 */
 
