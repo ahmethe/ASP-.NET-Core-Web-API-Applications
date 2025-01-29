@@ -46,6 +46,18 @@ using System.Text.Json;
 
     Data shaping; API tüketicisinin, query string aracılığıyla talep ettiği nesnenin alanlarını seçerek sonuç setini şekillendirmesini sağlar. Her API için olmazsa olmaz
     değildir. Run time'da çalışacak şekilde kodlama yapıldığı için maliyetli bir işlemdir. Trafik durumu ve bu işlemin maliyetli olması arasında doğru denge kurulmalıdır.
+
+    RESTFul API'lar olgunlaşma seviyelerine sahiptir. 
+    Level 3 -> HATEOAS(Hypermedia as the Engine of Application State) ve hypermedia desteği.
+    Level 2 -> Birden fazla kaynak üzerinde HTTP methodlarının kullanıldığı seviye.
+    Level 1 -> Birden fazla kaynak fakat tüm işlemlerin POST ile gerçekleştiği seviye.
+    Level 0 -> Tek bir kaynağın olduğu ve tüm işlemlerin POST ile gerçekleştiği seviye.
+    Hypmerdia desteği, linkler üreterek kaynak bazında tanımlamalar yapmak anlamına gelir. Bu link üretme ve kaynak tanımlama olayı run time'da gerçekleşir. Yani dinamik kod
+    yazmayı gerektirir. Uygulama detayları yoğundur. Pragmatik bir yaklaşımla, her API'ın hypermedia desteğine sahip olmak zorunda olmadığının farkında olmalıyız. İyi tasarlanmış
+    ve iyi yapılandırılmış bir API ileride hypermedia desteği verme özelliğini kazanabilecek bir yapıya sahip olmalıdır. Çok fazla kullanıcısı olmayan ve bir backend organizasyonuna sahip
+    bir API hypermedia desteği vermek zorunda değildir. Pragmatik yaklaşım kısaca bize bunu öğütler. İnternet üzerindeki birçok API da tam da bu nedenle 2. seviyededir.
+    Hypermedia desteği vermek, API'a self definition özelliği kazandırır. Kullanıcı hangi endpointe hangi verb ile gidip ne yapacağından haberdar olur. Çok fazla kullanıcısı olan bir API için keşfedilebilme
+    özelliği kazandırdığı için çok önemlidir.
 </summary>
 */
 
@@ -64,16 +76,25 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
+        [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
         public async Task<IActionResult> GetAllBooks([FromQuery] BookParameters bookParameters)
         {
-            var pagedResult = await _manager.
+            var linkParameters = new LinkParameters()
+            {
+                BookParameters = bookParameters,
+                HttpContext = HttpContext
+            };
+
+            var result = await _manager.
                 BookService.
-                GetAllBooksAsync(bookParameters, false);
+                GetAllBooksAsync(linkParameters, false);
 
             Response.Headers.Append("X-Pagination",
-                JsonSerializer.Serialize(pagedResult.metaData));
-            
-            return Ok(pagedResult.books);
+                JsonSerializer.Serialize(result.metaData));
+
+            return result.linkResponse.HasLinks ?
+                Ok(result.linkResponse.LinkedEntities) :
+                Ok(result.linkResponse.ShapedEntities);
         }
 
         [HttpGet("{id:int}")]

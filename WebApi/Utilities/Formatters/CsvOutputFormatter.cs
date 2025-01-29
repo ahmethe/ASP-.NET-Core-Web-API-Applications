@@ -8,6 +8,9 @@ using System.Text;
     Text/csv için bir output formatter tanımlandı. BookDto listesi için ve
     tek bir bookDto için bir builder yapılandırması gerçekleştirildi.
     En sonda ise asenkron bir şekilde çıkış gerçekleştirildi.
+    Burada dikkat edilirse CanWriteType adında bir fonksiyon var. Bu fonksiyon BookDto'yu
+    baz alarak çalışmaktadır. Dolayısıyla çalışma zamanında oluşan ExpandoObject döndürüldüğü zaman
+    false dönecek ve csv çıkış yapılamayacaktır.
 </summary>
 */
 
