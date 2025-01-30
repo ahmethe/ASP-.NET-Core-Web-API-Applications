@@ -58,6 +58,9 @@ using System.Text.Json;
     bir API hypermedia desteği vermek zorunda değildir. Pragmatik yaklaşım kısaca bize bunu öğütler. İnternet üzerindeki birçok API da tam da bu nedenle 2. seviyededir.
     Hypermedia desteği vermek, API'a self definition özelliği kazandırır. Kullanıcı hangi endpointe hangi verb ile gidip ne yapacağından haberdar olur. Çok fazla kullanıcısı olan bir API için keşfedilebilme
     özelliği kazandırdığı için çok önemlidir.
+
+    Bir sunucuya, o sunucu çalıştırabileceğimiz HTTP verblerini öğrenmek için OPTIONS ile istekte bulunuruz. İstek ve gelen cevap herhangi bir body içermez.
+    Sunucudan body olmaksızın sadece metadata(tanımlayıcı bilgiler) bilgisini almak için ise HEAD ile istekte bulunulur. İstek de aynı şekilde bir body içermez.
 </summary>
 */
 
@@ -75,9 +78,10 @@ namespace Presentation.Controllers
             _manager = manager;
         }
 
+        [HttpHead]
         [HttpGet]
         [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
-        public async Task<IActionResult> GetAllBooks([FromQuery] BookParameters bookParameters)
+        public async Task<IActionResult> GetAllBooksAsync([FromQuery] BookParameters bookParameters)
         {
             var linkParameters = new LinkParameters()
             {
@@ -152,5 +156,11 @@ namespace Presentation.Controllers
             return NoContent();
         }
 
+        [HttpOptions]
+        public IActionResult GetBooksOptions()
+        {
+            Response.Headers.Append("Allow", "GET, PUT, POST, PATCH, DELETE, OPTIONS, HEAD");
+            return Ok();
+        }
     }
 }

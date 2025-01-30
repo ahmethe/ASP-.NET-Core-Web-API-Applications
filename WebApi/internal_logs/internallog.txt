@@ -424,3 +424,19 @@
 2025-01-29 15:13:21.4453 Info Configuration initialized.
 2025-01-29 15:16:24.5836 Info AppDomain Shutting down. LogFactory closing...
 2025-01-29 15:16:24.7432 Info LogFactory has been closed.
+2025-01-30 15:31:50.1345 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-01-30 15:31:50.1507 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2025-01-30 15:31:50.1653 Info Validating config: TargetNames=logfile, ConfigItems=12, FilePath=C:\Users\ahmet\Ahmet\Dersler\.Net 6.0 RESTful Web API\Applications\bsStoreApp\WebApi\nlog.config
+2025-01-30 15:31:50.1850 Info Configuration initialized.
+2025-01-30 15:34:50.2897 Info AppDomain Shutting down. LogFactory closing...
+2025-01-30 15:34:50.3305 Info LogFactory has been closed.
+2025-01-30 15:38:29.3429 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-01-30 15:38:29.4339 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2025-01-30 15:38:29.4649 Info Validating config: TargetNames=logfile, ConfigItems=12, FilePath=C:\Users\ahmet\Ahmet\Dersler\.Net 6.0 RESTful Web API\Applications\bsStoreApp\WebApi\nlog.config
+2025-01-30 15:38:29.4976 Info Configuration initialized.
+2025-01-30 15:42:25.5064 Info AppDomain Shutting down. LogFactory closing...
+2025-01-30 15:42:25.6063 Info LogFactory has been closed.
+2025-01-30 15:44:16.6137 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-01-30 15:44:16.6313 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.3.4.2778. Product version: 5.3.4+73d83d3161d31288ca5c554cc50d27b6bed5f28b. GlobalAssemblyCache: False
+2025-01-30 15:44:16.6313 Info Validating config: TargetNames=logfile, ConfigItems=12, FilePath=C:\Users\ahmet\Ahmet\Dersler\.Net 6.0 RESTful Web API\Applications\bsStoreApp\WebApi\nlog.config
+2025-01-30 15:44:16.6528 Info Configuration initialized.
