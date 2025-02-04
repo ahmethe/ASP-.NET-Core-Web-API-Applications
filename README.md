@@ -67,13 +67,13 @@ Hypermedia desteği pragmatik bir yaklaşımla ele alınır. Bu da bize çoğu A
 API keşfedilebilirliğini(discoverability) artırır.
 
 ## API OLGUNLAŞMA SEVİYELERİ
-level 3 -> HATEOS hypermedia support
-level 2 -> birden fazla kaynak ve HTTP methodları
-level 1 -> birden fazla kaynak sadece POST
-level 0 -> tek kaynak sadece POST
+- **Level 3** – HATEOAS (Hypermedia as the Engine of Application State) support  
+- **Level 2** – Birden fazla kaynak ve HTTP methodları  
+- **Level 1** – Birden fazla kaynak, sadece POST  
+- **Level 0** – Tek kaynak, sadece POST
 
 ## curl: CLIENT URL
-Unix bazlı sistemlerde mevcut olan bir komuttur. Ücretsiz bir URL transfer kütüphanesidir.
-URL'lerin bağlanabilirliğini kontrol etmek ve veri transferi için geliştirilmiş bir araçtır.
-HTTP de içinde olmak üzere birçok protokolü destekler.
-Postman, Swagger gibi araçlar curl komut setini kullanır.
+- Unix bazlı sistemlerde mevcut olan bir komuttur. Ücretsiz bir URL transfer kütüphanesidir.  
+- URL'lerin bağlanabilirliğini kontrol etmek ve veri transferi için geliştirilmiş bir araçtır.
+- HTTP de içinde olmak üzere birçok protokolü destekler.
+- Postman, Swagger gibi araçlar curl komut setini kullanır.
