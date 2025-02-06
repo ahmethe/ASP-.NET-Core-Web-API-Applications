@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using Services;
@@ -85,6 +86,9 @@ namespace WebApi
             builder.Services.ConfigureVersioning();
             builder.Services.ConfigureResponseCaching();
             builder.Services.ConfigureHttpCacheHeaders();
+            builder.Services.AddMemoryCache();
+            builder.Services.ConfigureRateLimitingOptions();
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 
@@ -105,6 +109,7 @@ namespace WebApi
 
             app.UseHttpsRedirection();
 
+            app.UseIpRateLimiting();
             app.UseCors("CorsPolicy");
             app.UseResponseCaching(); //CORS'dan sonra caching ifadesi çaðrýlmalýdýr. Microsoft önerisi.
             app.UseHttpCacheHeaders();
