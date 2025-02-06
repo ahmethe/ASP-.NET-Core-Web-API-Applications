@@ -61,6 +61,17 @@ using System.Text.Json;
 
     Bir sunucuya, o sunucu çalıştırabileceğimiz HTTP verblerini öğrenmek için OPTIONS ile istekte bulunuruz. İstek ve gelen cevap herhangi bir body içermez.
     Sunucudan body olmaksızın sadece metadata(tanımlayıcı bilgiler) bilgisini almak için ise HEAD ile istekte bulunulur. İstek de aynı şekilde bir body içermez.
+
+    Caching: Gerekli isteklerin ayırt edilmesi olarak özetlenebilir. 
+    Expiration Modelde, normal client-sunucu arasına bir cache mekanizması eklenir. Bu mekanizma ile API istemciden bir istek geldiğinde bir cevap üretir
+    ve bu cevabın içine bir max-age bilgisi ekler. Bunu cache mekanizmasına ekler. Şayet tekrardan aynı istek alınırsa bu sefer cache ile bu cevap döndürülür. Sözü edilen max-age dolarsa bu sefer bu döngü başa döner, API 
+    cevap üretir ve bu cevabı cache mekanizmasına ekler. Gerekli isteklerin ayrılması ile ifade edilmek istenen mantık budur. 
+    Önbelleğe alma işlemi 3 farklı şekilde gerçekleşebilir. Dönülen response private olarak
+    istemcinin kaynağında saklanır. Bu Client Cache olarak adlandırılır. Oluşturulan isteklerin birden fazla client ile ilişkilendirildiği ve ortak bir yerden cevapların döndürülebilirdiği mekanizma ise gateway cache sunucu taraflı önbelleğe almadır.
+    Son yöntem Proxy Cache ise, önbelleğe alma işleminin ağ üzerinde gerçekleştiği yapıdır.
+    Validation Modelde ise, bir istek geldiğinde üretilen cevabın header kısmına bir ETag ve LastModified Attribute eklenir. İstemci tekrar aynı istekle geldiğinde bu alanlar sunucu tarafından kontrol edilir
+    ve kaynaklar güncelliğini koruyorsa 304 Not Modified ile dönüş yapılır. Örneğin cache süresi 30 dakikaysa ve 5. dakikada kaynaklar güncellendiyse bunlar sunucu tarafından kontrol kısmında dikkate alınır ve istemci bilgilendirilir.
+    .NET validation modelde birtakım problemler mevcuttur.
 </summary>
 */
 
@@ -70,6 +81,8 @@ namespace Presentation.Controllers
     [ServiceFilter(typeof(LogFilterAttribute))]
     [ApiController]
     [Route("api/books")]
+    //[ResponseCache(CacheProfileName = "5mins")]
+    //[HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 80)]
     public class BooksController : ControllerBase
     {
         private readonly IServiceManager _manager;
@@ -82,6 +95,7 @@ namespace Presentation.Controllers
         [HttpHead]
         [HttpGet(Name = "GetAllBooksAsync")]
         [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+        //[ResponseCache(Duration = 60)] //Bu ifade controller üzerinde yapılan tanımı ezecek.
         public async Task<IActionResult> GetAllBooksAsync([FromQuery] BookParameters bookParameters)
         {
             var linkParameters = new LinkParameters()

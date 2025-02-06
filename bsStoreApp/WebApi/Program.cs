@@ -57,6 +57,7 @@ namespace WebApi
             {
                 config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
+                config.CacheProfiles.Add("5mins", new CacheProfile() { Duration = 300});
             })
             .AddXmlDataContractSerializerFormatters()
             .AddCustomCsvFormatter()
@@ -82,6 +83,8 @@ namespace WebApi
             builder.Services.AddCustomMediaTypes();
             builder.Services.AddScoped<IBookLinks, BookLinks>();
             builder.Services.ConfigureVersioning();
+            builder.Services.ConfigureResponseCaching();
+            builder.Services.ConfigureHttpCacheHeaders();
 
             var app = builder.Build();
 
@@ -103,6 +106,8 @@ namespace WebApi
             app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy");
+            app.UseResponseCaching(); //CORS'dan sonra caching ifadesi çaðrýlmalýdýr. Microsoft önerisi.
+            app.UseHttpCacheHeaders();
 
             app.UseAuthorization();
 
