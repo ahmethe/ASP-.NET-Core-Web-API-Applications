@@ -1,8 +1,10 @@
 ﻿using Entities.DataTransferObjects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Presentation.ActionFilters;
+using Presentation.Controllers;
 using Repositories.Contracts;
 using Repositories.EFCore;
 using Services;
@@ -23,6 +25,12 @@ using Services.Contracts;
     ConfigureLoggerService: NLog kütüphanesi ile kullandığımız LoggerService ifadesinin servis kaydı. (IoC)
     AddCustomMediaTypes: Zengin çıktı istendiğinde linkleri üretecek şekilde media type ifadesi eklemek amacıyla eklendi.(Hypermedia) Daha sonra
     kök belge organizasyonu gerekirse, yeni bir media type eklemek gerekirse yine bu noktadan yönetimi gerçekleştirilecek.
+    ConfigureVersioning; 
+    ReportApiVersions: API version bilgisinin response headerda yer almasını sağlar.
+    AssumeDefaultVersionWhenUnspecified: Kullanıcı herhangi version bilgisi talep etmese de API default bir version bilgisine sahip.
+    DefaultApiVersion: Default versionu belirttiğimiz yer. Major değişiklikler 1, minör değişikler 0.
+    ApiVersionReader: Header ile versioning yapmak için.
+    Conventions.Controller: Bu ifade ile konfigürasyon yardımıyla daha önceki yöntemlerde attribute ile yaptığımzıı yapmış olduk.
 </summary>
 */
 
@@ -97,6 +105,23 @@ namespace WebApi.Extensions
                     xmlOutputFormatter.SupportedMediaTypes
                     .Add("application/vnd.btkakademi.apiroot+xml");
                 }
+            });
+        }
+        
+        public static void ConfigureVersioning(this IServiceCollection services)
+        {
+            services.AddApiVersioning(opt =>
+            {
+                opt.ReportApiVersions = true; 
+                opt.AssumeDefaultVersionWhenUnspecified = true; 
+                opt.DefaultApiVersion = new ApiVersion(1, 0);
+                opt.ApiVersionReader = new HeaderApiVersionReader("api-version");
+                
+                opt.Conventions.Controller<BooksController>()
+                    .HasApiVersion(new ApiVersion(1, 0));
+
+                opt.Conventions.Controller<BooksV2Controller>()
+                    .HasDeprecatedApiVersion(new ApiVersion(2, 0));
             });
         }
     }
