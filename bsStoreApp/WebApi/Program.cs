@@ -89,6 +89,8 @@ namespace WebApi
             builder.Services.AddMemoryCache();
             builder.Services.ConfigureRateLimitingOptions();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.ConfigureIdentity();
+            builder.Services.ConfigureJWT(builder.Configuration);
 
             var app = builder.Build();
 
@@ -114,6 +116,7 @@ namespace WebApi
             app.UseResponseCaching(); //CORS'dan sonra caching ifadesi çaðrýlmalýdýr. Microsoft önerisi.
             app.UseHttpCacheHeaders();
 
+            app.UseAuthentication(); //Oturum açtýktan sonra yetkilendirme olur.
             app.UseAuthorization();
 
             app.MapControllers();
