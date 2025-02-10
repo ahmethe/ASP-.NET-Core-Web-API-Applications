@@ -14,6 +14,7 @@ namespace Presentation.Controllers
     //[ApiVersion("2.0", Deprecated = true)]
     [ApiController]
     [Route("api/books")]
+    [ApiExplorerSettings(GroupName = "v2")]
     //[Route("api/{v:apiversion}/books")] URL ile versiyonlama.
     public class BooksV2Controller : ControllerBase
     {

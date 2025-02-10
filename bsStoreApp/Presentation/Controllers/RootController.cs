@@ -11,6 +11,7 @@ namespace Presentation.Controllers
 {
     [ApiController] //API standart davranışını kazandırıp bu controllerin bir API controller olması için.
     [Route("api")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class RootController : ControllerBase //Controller özelliği kazandırmak için.
     {
         private readonly LinkGenerator _linkGenerator;

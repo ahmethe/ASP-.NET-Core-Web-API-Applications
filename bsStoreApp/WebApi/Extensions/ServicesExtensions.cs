@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Presentation.ActionFilters;
 using Presentation.Controllers;
 using Repositories.Contracts;
@@ -38,6 +39,8 @@ using System.Text;
     DefaultApiVersion: Default versionu belirttiğimiz yer. Major değişiklikler 1, minör değişikler 0.
     ApiVersionReader: Header ile versioning yapmak için.
     Conventions.Controller: Bu ifade ile konfigürasyon yardımıyla daha önceki yöntemlerde attribute ile yaptığımzıı yapmış olduk.
+
+    Swagger dilden bağımsız (Language agnostic) bir spesifikasyona sahiptir. Bu da OpenAPI olarak ifade edilir.
 </summary>
 */
 
@@ -206,6 +209,55 @@ namespace WebApi.Extensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                 }
             );
+        }
+    
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            //OpenApi desteği sunulup bir standart oluşturulacağı için OpenApi nesneleri kullanılır.
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "BTK Akademi",
+                        Version = "v1",
+                        Description = "BTK Akademi ASP.NET Core Web API",
+                        TermsOfService = new Uri("https://www.btkakademi.gov.tr"),
+                        Contact = new OpenApiContact
+                        {
+                            Name = "Ahmet Hilmi ERDEN",
+                            Email = "ahmeterden1705@gmail.com",
+                            Url = new Uri("https://github.com/ahmethe")
+                        } //lisans bilgisi vs. tanımlar da eklenebilir.
+                    }); //versiyonlara göre gerçekleştirilmiş belgeler.
+                
+                s.SwaggerDoc("v2", new OpenApiInfo { Title = "BTK Akademi", Version = "v2" });
+
+                s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme() //Bearer ile authorization yapılacağını belirten ve ilgili konfigürasyonların yapıldığı kod bloğu.
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Place to add JWT with Bearer",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                s.AddSecurityRequirement(new OpenApiSecurityRequirement() //Authentication ve Authorization için gerekli 2. konfigürasyon.
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Name = "Bearer"
+                        },
+                        new List<string>()
+                    }
+                });
+            });
         }
     }
 }

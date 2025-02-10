@@ -79,6 +79,7 @@ using System.Text.Json;
 namespace Presentation.Controllers
 {
     //[ApiVersion("1.0")]
+    [ApiExplorerSettings(GroupName = "v1")] //ApiExplorer tarafından versiyonlar için ilgili controllerların farkedilebilmesi için. 
     [ServiceFilter(typeof(LogFilterAttribute))]
     [ApiController]
     [Route("api/books")]
