@@ -1,32 +1,34 @@
-﻿using AutoMapper;
-using Entities.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Repositories.Contracts;
-using Services.Contracts;
+﻿using Services.Contracts;
+
+/*
+<summary>
+    Burada gerekli ifadelerin IoC kaydı yapıldı. Parametre olarak geçilen mapper ve logger
+    ifadelerinin daha önceden IoC kaydı yapıldığı için framework bunu otomatik olarak çözümleyecektir.
+    BookManager içinde kullanılan BookLinks ifadesinin de IoC kaydı yapılmıştı. UserManager ifadesi yerleşik
+    olarak kullanılan bir ifadedir. Aynı şekilde configuration da dahili olarak var olan bir yapıdır. RepositoryManager
+    ifadesinin kaydı zaten en başta yapılmıştı.
+</summary>
+*/
 
 namespace Services
 {
     public class ServiceManager : IServiceManager
     {
-        private readonly Lazy<IBookService> _bookService;
-        private readonly Lazy<IAuthenticationService> _authenticationService;
+        private readonly IBookService _bookService;
+        private readonly IAuthenticationService _authenticationService;
+        private readonly ICategoryService _categoryService;
 
-        public ServiceManager(IRepositoryManager repositoryManager,
-            ILoggerService logger,
-            IMapper mapper,
-            UserManager<User> userManager,
-            IBookLinks bookLinks,
-            IConfiguration configuration)
+        public ServiceManager(IBookService bookService, 
+            IAuthenticationService authenticationService, 
+            ICategoryService categoryService)
         {
-            _bookService = new Lazy<IBookService>(() => 
-            new BookManager(repositoryManager, logger, mapper, bookLinks));
-
-            _authenticationService = new Lazy<IAuthenticationService>(() =>
-            new AuthenticationManager(logger, mapper, userManager, configuration));
+            _bookService = bookService;
+            _authenticationService = authenticationService;
+            _categoryService = categoryService;
         }
 
-        public IBookService BookService => _bookService.Value;
-        public IAuthenticationService AuthenticationService => _authenticationService.Value;
+        public IBookService BookService => _bookService;
+        public IAuthenticationService AuthenticationService => _authenticationService;
+        public ICategoryService CategoryService => _categoryService;
     }
 }

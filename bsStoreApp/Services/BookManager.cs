@@ -7,10 +7,21 @@ using Entities.RequestFeatures;
 using Repositories.Contracts;
 using Services.Contracts;
 
+/*
+<summary>
+    Create işlemi gerçekleşirken artık ilgili kategori bilgisi de alınıyor ve bu alan üzerinden
+    bir kontrol gerçekleştiriliyor. Bu kontrolü gerçekleştirirken kod tekrarına düşmemek ve kategori üzerinde
+    çalıştırılan bir lojik varsa bunu göz önüne almak için CategoryService ifadesi de buraya enjekte edildi.
+    Zaten var olup olmama kontrolü CategoryService üzerinde gerçekleştiriliyor. Fakat buna bağlı olarak constructora
+    bir injekte işlemi gerçekleştiği için ServiceManager ifadesinde de değişiklik yapıldı.
+</summary>
+*/
+
 namespace Services
 {
     public class BookManager : IBookService
     {
+        private readonly ICategoryService _categoryService;
         private readonly IRepositoryManager _manager;
         private readonly ILoggerService _logger;
         private readonly IMapper _mapper;
@@ -18,16 +29,21 @@ namespace Services
         public BookManager(IRepositoryManager manager,
             ILoggerService logger,
             IMapper mapper,
-            IBookLinks bookLinks)
+            IBookLinks bookLinks,
+            ICategoryService categoryService)
         {
             _manager = manager;
             _logger = logger;
             _mapper = mapper;
             _bookLinks = bookLinks;
+            _categoryService = categoryService;
         }
 
         public async Task<BookDto> CreateOneBookAsync(BookDtoForInsertion bookDto)
         {
+            var category = await _categoryService
+                .GetOneCategoryByIdAsync(bookDto.CategoryId, false);
+
             var entity = _mapper.Map<Book>(bookDto);
             _manager.Book.CreateOneBook(entity);
             await _manager.SaveAsync(); //Değişikliklerin veritabanına yansıması için yapılır.
@@ -67,6 +83,13 @@ namespace Services
         {
             var books = await _manager.Book.GetAllBooksAsync(trackChanges);
             return books;
+        }
+
+        public async Task<IEnumerable<Book>> GetAllBooksWithDetailsAsync(bool trackChanges)
+        {
+            return await _manager
+                .Book
+                .GetAllBooksWithDetailsAsync(trackChanges);
         }
 
         public async Task<BookDto> GetOneBookByIdAsync(int id, bool trackChanges)

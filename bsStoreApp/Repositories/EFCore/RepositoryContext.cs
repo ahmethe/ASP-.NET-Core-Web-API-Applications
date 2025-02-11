@@ -1,8 +1,15 @@
 ﻿using Entities.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Repositories.EFCore.Config;
 using System.Reflection;
+
+/*
+<summary>
+    Context olmadan herhangi bir şekilde herhangi bir varlık kullanılamaz. 
+    Varlık varsa bu DbSet ile sarmallanmalıdır ki tablosu oluşabilsin.
+    Aksi halde context üzerinden bu varlığa ait tabloya ulaşamayız.
+</summary>
+*/
 
 namespace Repositories.EFCore
 {
@@ -12,7 +19,9 @@ namespace Repositories.EFCore
             base(options)
         {
         }
+
         public DbSet<Book> Books { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

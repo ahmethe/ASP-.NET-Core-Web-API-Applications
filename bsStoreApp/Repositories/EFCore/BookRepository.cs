@@ -80,6 +80,15 @@ namespace Repositories.EFCore
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Book>> GetAllBooksWithDetailsAsync(bool trackChanges)
+        {
+            return await _context
+                .Books
+                .Include(b => b.Category) //EF Core nesne ilişkisi durumunda Lazy Loading yapar. Kategoriyi bu ifadeyi yazmazsak getirmez.
+                .OrderBy(b => b.Id)
+                .ToListAsync();
+        }
+
         public async Task<Book> GetOneBookByIdAsync(int id, bool trackChanges) =>
             await FindByCondition(b => b.Id.Equals(id), trackChanges)
             .SingleOrDefaultAsync();

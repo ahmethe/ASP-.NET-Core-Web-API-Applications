@@ -1,5 +1,6 @@
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NLog;
 using Services;
 using Services.Contracts;
@@ -38,6 +39,12 @@ using WebApi.Extensions;
 
     X-Pagination ifademizin clientlar tarafýndan okunup tüketilebilmesi için bir izin tanýmlanmalýdýr. Bu da Cors konfigürasyonuyla mümkündür.
     CORS: Cross Origin Resource Sharing.
+
+    Book ve Category arasýnda bir iliþki kurduk ve bu iliþkiyi gösterirken navigation property kullandýk. Bu property yapýsý ile booktan categorye ve ayný þekilde categoryden
+    booka geçiþ yapmak mümkün. Kitaplarý kategori bilgileri ile getirmek istediðimiz zaman bir sonsuz döngü durumu gerçekleþecek. Bu durumu ortadan kaldýrmak için NewtonSoft tanýmýný
+    tekrar kullanýlabilir hale getirdik ve reference loop engel olmak için Ignore olarak set ettik ilgili ifadeyi. Fakat bu durumda da nesne iliþkileri 2 yönlü olmuþ olacak. Yani biz kitabýn
+    ait olduðu kategoriye ait bilgileri getirirken bu kategoriye sahip kitaplarý da ilgili kitap haricinde getirmiþ olacak. Burada amaç kategori bilgilerine eriþmek olduðu için bu books alanýnda
+    kurtulmamýz gereklidir.
 </summary>
 */
 
@@ -58,12 +65,14 @@ namespace WebApi
             {
                 config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
-                config.CacheProfiles.Add("5mins", new CacheProfile() { Duration = 300});
+                config.CacheProfiles.Add("5mins", new CacheProfile() { Duration = 300 });
             })
             .AddXmlDataContractSerializerFormatters()
             .AddCustomCsvFormatter()
-            .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
-            //.AddNewtonsoftJson();
+            .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly)
+            .AddNewtonsoftJson(opt =>
+                opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            );
 
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -90,6 +99,8 @@ namespace WebApi
             builder.Services.AddHttpContextAccessor();
             builder.Services.ConfigureIdentity();
             builder.Services.ConfigureJWT(builder.Configuration);
+            builder.Services.RegisterRepositories();
+            builder.Services.RegisterServices();
 
             var app = builder.Build();
 
